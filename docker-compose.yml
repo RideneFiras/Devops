@@ -1,0 +1,25 @@
+version: "3.9"
+
+name: student-management-stack
+
+services:
+  app:
+    build: .
+    container_name: sm-app
+    ports:
+      - "8089:8089"
+    environment:
+      SERVER_PORT: "8089"
+      # Keep the same exclusion here in case you run the JAR directly in the image
+      JAVA_TOOL_OPTIONS: >-
+        -Dspring.autoconfigure.exclude=
+        org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration,
+        org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration
+
+  # Enable SonarQube with: docker compose --profile sonar up -d
+  sonarqube:
+    image: sonarqube:lts
+    container_name: sm-sonarqube
+    ports:
+      - "9000:9000"
+    profiles: ["sonar"]
